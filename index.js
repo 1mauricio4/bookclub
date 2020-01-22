@@ -1,4 +1,6 @@
 const express = require("express");
+const mongoose = require("mongoose");
+require("dotenv").config();
 
 const users = require("./routes/api/users");
 const profile = require("./routes/api/profile");
@@ -8,6 +10,15 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// DB URL
+const db = process.env.MONGODB_URL;
+
+// Connect to DB
+mongoose
+  .connect(db, { useUnifiedTopology: true, useNewUrlParser: true })
+  .then(() => console.log("MongoDB Connected..."))
+  .catch(err => console.log("error: ", err));
 
 // Use Routes
 app.use("/api/users", users);
@@ -26,5 +37,5 @@ if (process.env.NODE_ENV === "production") {
 const port = process.env.PORT || 5000;
 
 const server = app.listen(port, () =>
-  console.log(`Server listening in port ${port}`)
+  console.log(`Server listening on port ${port}`)
 );
